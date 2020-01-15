@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class DbConnection:
-    def __init__(self, sql_config_path: str, use_cache: bool = False, cache_directory_path: str = None):
+    def __init__(self, sql_config_path: str, use_cache: bool = False, cache_directory_path: str = None) -> None:
         """
         For more info on connection strings: https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls.
         General format is dialect+driver://username:password@host:port/database.
@@ -84,7 +84,7 @@ class DbConnection:
             logger.info(f"Reading '{table_name}' from the '{self.database_name}' database...")
             return pd.read_sql_table(table_name=table_name, con=self.engine, parse_dates=parse_dates)
 
-    def df_to_table(self, df: pd.DataFrame, table_name: str, if_exists: str = 'replace', index: bool = False):
+    def df_to_table(self, df: pd.DataFrame, table_name: str, if_exists: str = 'replace', index: bool = False) -> None:
         """
         Inserts a Pandas DataFrame into a database table.
         Args:
