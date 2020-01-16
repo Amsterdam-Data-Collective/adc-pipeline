@@ -74,7 +74,7 @@ class PipelineBase(ABC):
         self.method_settings = method_settings
 
     @classmethod
-    def from_yaml_file(cls, path: str) -> object:
+    def from_yaml_file(cls, path: str):
         """
         This is a factory method to instantiate this class by loading the settings from a yaml file.
         Format of yaml file should be:
