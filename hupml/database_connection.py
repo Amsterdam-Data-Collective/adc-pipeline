@@ -5,7 +5,7 @@ from typing import List
 import pandas as pd
 from sqlalchemy import create_engine
 
-from .load_config import LoadConfig
+from load_config import LoadConfig
 
 logger = logging.getLogger(__name__)
 
