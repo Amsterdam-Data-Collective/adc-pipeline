@@ -17,6 +17,7 @@ statsmodels = "*"
 xlrd = "*"
 openpyxl = "*"
 holidays = "*"
+hupml = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
