@@ -3,7 +3,7 @@ from typing import Callable, Dict, List, Iterator
 
 from abc import ABC, abstractmethod
 
-from load_config import LoadConfig
+from hupml.load_config import LoadConfig
 
 logger = logging.getLogger(__name__)
 
