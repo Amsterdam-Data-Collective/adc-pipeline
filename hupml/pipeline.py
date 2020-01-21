@@ -1,7 +1,6 @@
 import logging
-from typing import Callable, Dict, List, Iterator
-
 from abc import ABC, abstractmethod
+from typing import Callable, Dict, List, Iterator
 
 from hupml.load_config import LoadConfig
 

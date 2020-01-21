@@ -1,15 +1,14 @@
 import logging
+from abc import abstractmethod
 from typing import List, Union
 
 import numpy as np
 import pandas as pd
-from abc import abstractmethod
-from pandas import DataFrame, Series
 
 logger = logging.getLogger(__name__)
 
 
-class MlSeries(Series):
+class MlSeries(pd.Series):
     """
     This class is an extension of the Pandas DataFrame class, to provide extra functionality. In order to let this class
     work correctly, there are a few Pandas methods and properties that need to be implemented as specified by the docs.
@@ -34,7 +33,7 @@ class MlSeries(Series):
         # If custom methods are needed, uncomment the following line:
         # return MlSeries
         ###
-        return Series
+        return pd.Series
 
     ###
     # CUSTOM METHODS AND PROPERTIES
@@ -43,7 +42,7 @@ class MlSeries(Series):
     # PLACEHOLDER: Nothing is added for series yet, add functionality here and delete this comment.
 
 
-class MlDataFrame(DataFrame):
+class MlDataFrame(pd.DataFrame):
     """
     This class is an extension of the Pandas DataFrame class, to provide extra functionality. In order to let this class
     work correctly, there are a few Pandas methods and properties that need to be implemented as specified by the docs.
@@ -83,12 +82,12 @@ class MlDataFrame(DataFrame):
     ###
 
     @property
-    def pandas_df(self) -> DataFrame:
+    def pandas_df(self) -> pd.DataFrame:
         """
         Returns:
             Casted Pandas Dataframe from MlDataFrame
         """
-        return DataFrame(self)
+        return pd.DataFrame(self)
 
     @property
     def memory_size(self) -> float:

@@ -1,7 +1,13 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='hupml',
     version='0.1',
-    packages=find_packages()
+    packages=['hupml'],
+    install_requires=[
+        'numpy',
+        'pandas',
+        'sqlalchemy',
+        'pyyaml'
+    ],
 )

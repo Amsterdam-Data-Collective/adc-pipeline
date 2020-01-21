@@ -6,17 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pyyaml = "*"
-pandas = "*"
-pymysql = "*"
-sqlalchemy = "*"
-matplotlib = "*"
-tables = "*"
-pandas-datareader = "*"
-statsmodels = "*"
-xlrd = "*"
-openpyxl = "*"
-holidays = "*"
+jupyter = "*"
 hupml = {editable = true,path = "."}
 
 [requires]
