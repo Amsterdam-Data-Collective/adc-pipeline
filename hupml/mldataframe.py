@@ -50,12 +50,10 @@ class MlDataFrame(pd.DataFrame):
 
     Docs: https://pandas.pydata.org/pandas-docs/stable/development/extending.html
     """
+
     ###
     # PANDAS METHODS
     ###
-
-    """Properties that should be persistent (still exist after slicing) should be added here"""
-    _metadata = ['pandas_df', 'memory_size']
 
     @property
     def _constructor_expanddim(self):
@@ -95,7 +93,7 @@ class MlDataFrame(pd.DataFrame):
         Returns:
             Memory size of the full DataFrame in KB
         """
-        return self.memory_usage().sum()
+        return round(self.memory_usage().sum() / 1000, 2)
 
     def downcast(self, signed_cols: bool = None) -> None:
         """

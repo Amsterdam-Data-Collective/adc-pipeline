@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Callable, Dict, List, Iterator
 
 from hupml.load_config import LoadConfig
+from pandas import DataFrame
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,7 @@ class PipelineBase(ABC):
             (in order) when the pipeline is run. Format: [{<method_name>: {<argument_name>: <argument_value>}}, ...]
         """
         self._methods_settings = methods_settings
+        self._method_list = []
         for setting in methods_settings:
             self._method_list.append(self.__get_lambda_method(setting))
 
@@ -69,11 +71,12 @@ class PipelineBase(ABC):
         """
         return self._method_list
 
-    def __init__(self, method_settings: List = None) -> None:
+    def __init__(self, df: DataFrame, method_settings: List) -> None:
+        self.df = df
         self.method_settings = method_settings
 
     @classmethod
-    def from_yaml_file(cls, path: str):
+    def from_yaml_file(cls, df: DataFrame, path: str):
         """
         This is a factory method to instantiate this class by loading the settings from a yaml file.
         Format of yaml file should be:
@@ -82,13 +85,14 @@ class PipelineBase(ABC):
           - <method_name>: {<argument_name>: <argument_value>}
           - ...
         Args:
+            df: This is your data in a DataFrame format.
             path: Path to yaml file.
 
         Returns:
             Instance of this class.
         """
         settings = LoadConfig.load_yaml_as_dict(path)['pipeline']
-        return cls(method_settings=settings)
+        return cls(df=df, method_settings=settings)
 
     def __call__(self) -> None:
         self.run()
@@ -130,5 +134,5 @@ class PipelineBase(ABC):
             method()
 
     @abstractmethod
-    def handle_nans(self) -> None:
-        pass
+    def handle_nans(self):
+        raise NotImplementedError
