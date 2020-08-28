@@ -1,9 +1,10 @@
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Callable, Dict, List, Iterator
 
-from hupml.load_config import LoadConfig
 from pandas import DataFrame
+
+from hupml.load_config import LoadConfig
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +133,3 @@ class PipelineBase(ABC):
         logger.info(f'Running pipeline using the following settings: {self.method_settings}')
         for method in self.method_list:
             method()
-
-    @abstractmethod
-    def handle_nans(self):
-        raise NotImplementedError
