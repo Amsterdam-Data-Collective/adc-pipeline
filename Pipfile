@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 jupyter = "*"
-hupml = {editable = true,path = "."}
+adcpipeline = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
