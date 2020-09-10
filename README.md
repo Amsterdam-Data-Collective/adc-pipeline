@@ -66,3 +66,24 @@ pipeline:
   - print_text_from_argument: {text: 'Same method is called again, but later in the pipeline'}
 ```
 
+### 3. Running the pipeline.
+With `method_settings` defined in step 2, we can now run our `Pipeline`:
+```
+p.run()
+```
+And that's it! By making multiple `method_settings` we can define several ways to run our `Pipeline`, without altering any of our code or writing any if statement. For example, during exploratory data analysis, it might be nice to try different things without constantly changing our code. We could then do something along the following lines:
+```
+p1 = Pipeline.from_yaml_file(df=data, path=f'{root_dir}/configs/<YOUR_METHOD_SETTINGS_1>.yaml')
+p2 = Pipeline.from_yaml_file(df=data, path=f'{root_dir}/configs/<YOUR_METHOD_SETTINGS_2>.yaml')
+p3 = Pipeline.from_yaml_file(df=data, path=f'{root_dir}/configs/<YOUR_METHOD_SETTINGS_3>.yaml')
+
+p1.run()
+p2.run()
+p3.run()
+```
+Where each `YOUR_METHOD_SETTINGS_<N>.yaml` defines the `method_settings` per `Pipeline`.
+
+### Advanced usage
+- The `method_settings` dictionary is converted to actual methods with their corresponding arguments. These are saved as lambda's in the property `method_list`, which are called in order by the `run` method. You can call the methods from this list directly if you want.
+- The `PipelineBase` class contains several magic methods, so that it can be used as a list. For instance, `p[0]` will return the first item in the `method_settings` property. For more info, see the magic methods in the `PipelineBase` class.
+- If you have (mostly) the same data manipulations for each `Pipeline`, you can probably use just a single class as described above. However, if this class becomes extremly large and large portions of the code are evident to be only applicable to certain types of pipelines, you might consider multiple inheritance. For example, you might have completely different methods in your `Pipeline` for classification models and regression models. So you might build a `Pipeline` class as above, but make two extra classes - `PipelineClassification` and `PipelineRegression` - that inherit from your `Pipeline` class. Another example is that you maybe have timeseries and non-timeseries data. Here, too, you might consider using multiple inheritance if that seems logical.
