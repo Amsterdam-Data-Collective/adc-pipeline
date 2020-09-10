@@ -19,7 +19,7 @@ And build your own `Pipeline` class by inheriting from PipelineBase:
 class Pipeline(PipelineBase):
     pass
 ```
-This doesn't do anything yet, so let's add a few steps in our `Pipeline`:
+This doesn't do anything yet, so let's add a few steps in our `Pipeline`. We do this by adding methods we want to execute when we run the Pipeline. The example below adds three methods to this specific `Pipeline`:
 ```
 class Pipeline(PipelineBase):
     def print_text_from_argument(self, text='asfd'):
@@ -34,4 +34,35 @@ class Pipeline(PipelineBase):
             result = result ** 2
         print(f'Squaring the number {value} for {n} times in a row gives = {result}')
 ```
-We now have added three different methods we want to execute when we run the Pipeline.
+
+### 2. Loading your (run) configuration.
+When we want to intantiate the `Pipeline`, we need to pass de data as an argument (`df`) and we need to pass our run configuration as an argument (`method_settings`):
+```
+p = Pipeline(df=data, method_settings=method_settings)
+```
+The variable `data` can be any data, as long as it is a Pandas DataFrame. The `method_settings` variable is a list containing dictionaries, which define (in order) how all the methods are going to be executed once our `Pipeline` runs. Each dictionary contains the method (name) that needs to be called. The values are a dictionary of arguments (names) with their corresponding argument value that is going to be passed to the method. An example will make things clear:
+```
+method_settings = [
+    {'print_text_from_argument': {'text': 'This is the text passed to the method'}},
+    {'print_text_from_argument': {'text': 1}},
+    {'print_predefined_text': None},
+    {'n_times_squared': {'value': 2, 'n': 2}},
+    {'print_text_from_argument': {'text': 'Same method is called again, but later in the pipeline'}}
+]
+```
+Here we see that the method `print_text_from_argument` is called two times with a `text` argument. This `text` argument is different each time. After that the other two methods are called and lastly, `print_text_from_argument` is called one last time.
+
+The `method_settings` as defined in the example above takes up a lot of lines and every time we make an additional `method_settings`, we get more lines of code. It is therefore recommended to load the `method_settings` from a configuration file instead. You can define your pipeline settings in a .yaml file and let the pipeline class load this file:
+```
+p = Pipeline.from_yaml_file(df=data, path=f'{root_dir}/configs/<YOUR_METHOD_SETTINGS>.yaml')
+```
+The .yaml file would then look like this:
+```
+pipeline:
+  - print_text_from_argument: {text: 'This is the text passed to the method'}
+  - print_text_from_argument: {text: 1}
+  - print_predefined_text:
+  - n_times_squared: {value: 2, n: 2}
+  - print_text_from_argument: {text: 'Same method is called again, but later in the pipeline'}
+```
+
