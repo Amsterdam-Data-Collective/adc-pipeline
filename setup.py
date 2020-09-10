@@ -1,13 +1,34 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    name='hupml',
-    version='0.1',
-    packages=['hupml'],
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name="adcpipeline",
+    version="0.1.0",
+    author="Example Author",  # REPLACE
+    author_email="author@example.com",  # REPLACE
+    description="A pipeline for a structured way of working",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/Amsterdam-Data-Collective/data-pipeline/tree/master",
+    download_url='https://github.com/Amsterdam-Data-Collective/data-pipeline/<ARCHIVE>',  # REPLACE
+    keywords=['SOME', 'MEANINGFULL', 'KEYWORDS'],  # REPLACE
+    packages=setuptools.find_packages(),
     install_requires=[
         'numpy',
         'pandas',
         'sqlalchemy',
         'pyyaml'
     ],
+    classifiers=[
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Build Tools",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Database",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.6',
 )
