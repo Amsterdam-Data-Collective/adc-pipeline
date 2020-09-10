@@ -21,8 +21,9 @@ class DbConnection:
             cache_directory_path: The path to the directory to find/save all the cache files.
         """
         conn_settings = LoadConfig.load_yaml_as_dict(sql_config_path)['connection_settings']
-        conn_str = f"{conn_settings['dialect']}+{conn_settings['driver']}:" \
-                   f"//{conn_settings['user']}:{conn_settings['passwd']}" \
+        conn_str = f"{conn_settings['dialect']}" \
+                   f"{'+' + conn_settings['driver'] if conn_settings['driver'] != '' else ''}:" \
+                   f"://{conn_settings['user']}:{conn_settings['passwd']}" \
                    f"@{conn_settings['host']}/{conn_settings['database']}"
         self.database_name = conn_settings['database']
         self.engine = create_engine(conn_str)
