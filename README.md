@@ -2,7 +2,7 @@
 There are a lot of different steps involved in data science projects. For example: fixing data quality issues, feature engineering, parameter tuning and reporting your results. Although these steps are often approximately the same, the approach is not necessarily the same. The data and the goal of the project determines the way you manipulate your data and what model you need. In turn, your model choice determines what kind of parameter tuning you need to do and how you are going to present your results. In other words, there are a lot of data-science-paths to walk. The more you program, the more you might get drowned in an ever increasing amount of if-statements, giving the feeling that you lose grip on the structure in your project. This package aims to solve that problem, by offering a more structured way of working.
 
 ## Basic principles
-To structure our project, we need to follow three steps:
+To structure your project, we need to follow three steps:
 1. Build your own `Pipeline` class.
 2. Loading your (run) configuration.
 3. Running the pipeline.
@@ -10,7 +10,7 @@ To structure our project, we need to follow three steps:
 Below, each step will be explained.
 
 ### 1. Build your own `Pipeline` class
-Import the `adcpipeline` package and import the `PipelineBase` class:
+From the `adcpipeline` package import the `PipelineBase` class:
 ```
 from adcpipeline import PipelineBase
 ```
@@ -36,7 +36,7 @@ class Pipeline(PipelineBase):
 ```
 
 ### 2. Loading your (run) configuration.
-When we want to intantiate the `Pipeline`, we need to pass de data as an argument (`df`) and we need to pass our run configuration as an argument (`method_settings`):
+When we want to instantiate the `Pipeline`, we need to pass de data as an argument (`df`) and we need to pass our run configuration as an argument (`method_settings`):
 ```
 p = Pipeline(df=data, method_settings=method_settings)
 ```
@@ -83,10 +83,10 @@ p3.run()
 ```
 Where each `YOUR_METHOD_SETTINGS_<N>.yaml` defines the `method_settings` per `Pipeline`.
 
-### Advanced usage
+## Advanced usage
 - The `method_settings` dictionary is converted to actual methods with their corresponding arguments. These are saved as lambda's in the property `method_list`, which are called in order by the `run` method. You can call the methods from this list directly if you want.
 - The `PipelineBase` class contains several magic methods, so that it can be used as a list. For instance, `p[0]` will return the first item in the `method_settings` property. For more info, see the magic methods in the `PipelineBase` class.
 - If you have (mostly) the same data manipulations for each `Pipeline`, you can probably use just a single class as described above. However, if this class becomes extremly large and large portions of the code are evident to be only applicable to certain types of pipelines, you might consider multiple inheritance. For example, you might have completely different methods in your `Pipeline` for classification models and regression models. So you might build a `Pipeline` class as above, but make two extra classes - `PipelineClassification` and `PipelineRegression` - that inherit from your `Pipeline` class. Another example is that you maybe have timeseries and non-timeseries data. Here, too, you might consider using multiple inheritance if that seems logical.
 
-### Other code
+## Other code
 There is some other code in this repository used directly by `PipelineBase` or that might be useful for you. To name a few: there is a DatabaseConnection class which is a small wrapper around sqlalchemy and there is a method to load loggers. This is not explicitly explained in the README, but can be used.
