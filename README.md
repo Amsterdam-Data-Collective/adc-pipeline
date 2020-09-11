@@ -1,6 +1,12 @@
 # ADC Pipeline
 There are a lot of different steps involved in data science projects. For example: fixing data quality issues, feature engineering, parameter tuning and reporting your results. Although these steps are often approximately the same, the approach is not necessarily the same. The data and the goal of the project determines the way you manipulate your data and what model you need. In turn, your model choice determines what kind of parameter tuning you need to do and how you are going to present your results. In other words, there are a lot of data-science-paths to walk. The more you program, the more you might get drowned in an ever increasing amount of if-statements, giving the feeling that you lose grip on the structure in your project. This package aims to solve that problem, by offering a more structured way of working.
 
+## Installation
+You can install with pip:
+```
+pip install adcpipeline
+```
+
 ## Basic principles
 To structure your project, we need to follow three steps:
 1. Build your own `Pipeline` class.
