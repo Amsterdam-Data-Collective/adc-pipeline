@@ -1,5 +1,5 @@
 # ADC Pipeline
-There are a lot of different steps involved in data science projects. For example: fixing data quality issues, feature engineering, parameter tuning and reporting your results. Although these steps are often approximately the same, the approach is not necessarily the same. The data and the goal of the project determines the way you manipulate your data and what model you need. In turn, your model choice determines what kind of parameter tuning you need to do and how you are going to present your results. In other words, there are a lot of data-science-paths to walk. The more you program, the more you might get drowned in an ever increasing amount of if-statements, giving the feeling that you lose grip on the structure in your project. This package aims to solve that problem, by offering a more structured way of working.
+There are a lot of different steps involved in data science projects. For example: fixing data quality issues, feature engineering, parameter tuning and reporting your results. Although these steps are often approximately the same, the exact approach per step isn't. The data and the goal of the project determine the way you manipulate your data and what model you need. In turn, your model choice determines what kind of parameter tuning you need to do and how you are going to present your results. In other words, there are a lot of data-science-paths to walk. The more you program, the more you might get drowned in an ever increasing amount of if-statements, giving the feeling that you lose grip on the structure in your project. This package aims to solve that problem, by offering a more structured way of working.
 
 ## Installation
 You can install with pip:
@@ -8,7 +8,7 @@ pip install adcpipeline
 ```
 
 ## Basic principles
-To structure your project, we need to follow three steps:
+To structure your project, you need to follow three steps:
 1. Build your own `Pipeline` class.
 2. Loading your (run) configuration.
 3. Running the pipeline.
@@ -42,7 +42,7 @@ class Pipeline(PipelineBase):
 ```
 
 ### 2. Loading your (run) configuration.
-When we want to instantiate the `Pipeline`, we need to pass de data as an argument (`df`) and we need to pass our run configuration as an argument (`method_settings`):
+When we want to instantiate the `Pipeline`, we need to pass the data as an argument (`df`) and we need to pass our run configuration as an argument (`method_settings`):
 ```
 p = Pipeline(df=data, method_settings=method_settings)
 ```
@@ -58,11 +58,11 @@ method_settings = [
 ```
 Here we see that the method `print_text_from_argument` is called two times with a `text` argument. This `text` argument is different each time. After that the other two methods are called and lastly, `print_text_from_argument` is called one last time.
 
-The `method_settings` as defined in the example above takes up a lot of lines and every time we make an additional `method_settings`, we get more lines of code. It is therefore recommended to load the `method_settings` from a configuration file instead. You can define your pipeline settings in a .yaml file and let the pipeline class load this file:
+The `method_settings` as defined in the example above takes up a lot of lines and every time we make an additional `method_settings`, we get more lines of code. It is therefore recommended to load the `method_settings` from a configuration file instead. You can define your pipeline settings in a `.yaml` file and let the pipeline class load this file:
 ```
 p = Pipeline.from_yaml_file(df=data, path=f'{root_dir}/configs/<YOUR_METHOD_SETTINGS>.yaml')
 ```
-The .yaml file would then look like this:
+The `.yaml` file would then look like this:
 ```
 pipeline:
   - print_text_from_argument: {text: 'This is the text passed to the method'}
@@ -95,4 +95,4 @@ Where each `YOUR_METHOD_SETTINGS_<N>.yaml` defines the `method_settings` per `Pi
 - If you have (mostly) the same data manipulations for each `Pipeline`, you can probably use just a single class as described above. However, if this class becomes extremly large and large portions of the code are evident to be only applicable to certain types of pipelines, you might consider multiple inheritance. For example, you might have completely different methods in your `Pipeline` for classification models and regression models. So you might build a `Pipeline` class as above, but make two extra classes - `PipelineClassification` and `PipelineRegression` - that inherit from your `Pipeline` class. Another example is that you maybe have timeseries and non-timeseries data. Here, too, you might consider using multiple inheritance if that seems logical.
 
 ## Other code
-There is some other code in this repository used directly by `PipelineBase` or that might be useful for you. To name a few: there is a DatabaseConnection class which is a small wrapper around sqlalchemy and there is a method to load loggers. This is not explicitly explained in the README, but can be used.
+There is some other code in this repository used directly by `PipelineBase` or that might be useful to you. To name a few: there is a DatabaseConnection class which is a small wrapper around sqlalchemy and there is a method to load loggers. This is not explicitly explained in the README, but can be used.
