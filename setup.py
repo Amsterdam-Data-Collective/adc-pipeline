@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Amsterdam-Data-Collective/data-pipeline/tree/master",
-    keywords=['Data Science', 'Data Engineering', 'Data'],
+    keywords=['Data Science', 'Data Engineering', 'Data', 'Pipeline'],
     packages=setuptools.find_packages(),
     install_requires=[
         'numpy',

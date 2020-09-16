@@ -1,7 +1,6 @@
-## Release on PyPi
-First, as usual, add a git tag on the master branch with the version number of the code you want to release by making a release through GitHub. Then to release on PyPi, do the following:
-
-1. Configure setup.py as needed.
+## How to release on PyPi
+1. Configure/update setup.py and the CHANGELOG.md as needed.
+2. Add a git tag on the master branch with the version number of the code you want to release by making a release through GitHub.
 2. Run the following command to build:
    ```
    python setup.py sdist --formats=gztar bdist_wheel
