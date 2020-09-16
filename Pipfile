@@ -7,7 +7,8 @@ verify_ssl = true
 
 [packages]
 jupyter = "*"
-adcpipeline = {editable = true,path = "."}
+adcpipeline = {editable = true,path = "."} # For local testing
+twine = "*"
 
 [requires]
 python_version = "3.7"
