@@ -6,14 +6,13 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="adcpipeline",
     version="0.1.0",
-    author="Example Author",  # REPLACE
-    author_email="author@example.com",  # REPLACE
+    author="Amsterdam Data Collective",
+    author_email="development@amsterdamdatacollective.com",
     description="A pipeline for a structured way of working",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Amsterdam-Data-Collective/data-pipeline/tree/master",
-    download_url='https://github.com/Amsterdam-Data-Collective/data-pipeline/<ARCHIVE>',  # REPLACE
-    keywords=['SOME', 'MEANINGFULL', 'KEYWORDS'],  # REPLACE
+    keywords=['Data Science', 'Data Engineering', 'Data'],
     packages=setuptools.find_packages(),
     install_requires=[
         'numpy',
