@@ -7,7 +7,6 @@
    ```
 3. Run the following to do some basic checks:
    ```
-   buildoutcfg
    twine check dist/*
    ```
 4. Do a test upload to TestPyPi to check everything works:
