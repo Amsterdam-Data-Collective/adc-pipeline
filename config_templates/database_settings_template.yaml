@@ -1,0 +1,7 @@
+connection_settings:
+  dialect: '<FILL IN DIALECT>'
+  driver: '<FILL IN DRIVER>'
+  host: '<FILL IN HOST URL>'
+  user: '<FILL IN USER>'
+  passwd: '<FILL IN PASSWORD>'
+  database: '<FILL IN DATABASE>'
