@@ -1,4 +1,6 @@
+import os
 import logging
+import pandas as pd
 from abc import ABC
 from typing import Callable, Dict, List, Iterator
 
@@ -12,6 +14,12 @@ logger = logging.getLogger(__name__)
 class PipelineBase(ABC):
     _methods_settings: List[Dict] = []
     _method_list: List[Callable] = []
+
+    def __init__(self, df: DataFrame, method_settings: List, filename: str = None, data_folder: str = 'data/') -> None:
+        self._step = 0
+        self.path = os.path.join(data_folder, filename) if filename is not None else None
+        self.df = df
+        self.method_settings = method_settings
 
     def __get_lambda_method(self, setting: Dict) -> Callable:
         """
@@ -72,10 +80,6 @@ class PipelineBase(ABC):
         """
         return self._method_list
 
-    def __init__(self, df: DataFrame, method_settings: List) -> None:
-        self.df = df
-        self.method_settings = method_settings
-
     @classmethod
     def from_yaml_file(cls, df: DataFrame, path: str):
         """
@@ -125,11 +129,42 @@ class PipelineBase(ABC):
         self.method_settings.insert(index, setting)
         self.method_list.insert(index, self.__get_lambda_method(setting))
 
-    def run(self) -> None:
+    def reset(self) -> None:
+        """
+        Reset the current step of the pipeline to 0
+        """
+        self._step = 0
+
+    def run(self, steps: int = None) -> None:
         """
         This will call all the lambdas (in order) saved in the 'method_list'. These methods can be set with the
         property 'method_settings'.
+        Args:
+            steps: instead of running all methods in the method list, run an N amount of methods.
         """
-        logger.info(f'Running pipeline using the following settings: {self.method_settings}')
-        for method in self.method_list:
+        if steps is None:
+            steps = len(self.method_list)
+        if self._step >= len(self.method_list):
+            logger.info("Pipeline already ran all methods, run pipeline.reset() before running again")
+            return
+        till_step = min(self._step + steps, len(self.method_settings))
+        current_methods = self.method_settings[self._step: till_step]
+        logger.info(f'Running pipeline using the following settings: {current_methods}')
+        for method in self.method_list[self._step: till_step]:
+            logger.info(f"Executing method {method}")
             method()
+        self._step += steps
+        if self.path is not None:
+            self.df.to_pickle(self.path)
+
+    def run_or_load(self) -> None:
+        """
+        If filename is defined in the constructor of the class a cache is made with the results of the pipeline.
+        Use this method to load the cache if available or run the pipeline if not.
+        """
+        if self.path is None:
+            raise ValueError("Mode not possible without a valid filename")
+        if os.path.isfile(self.path):
+            self.df = pd.read_pickle(self.path)
+        else:
+            self.run()
