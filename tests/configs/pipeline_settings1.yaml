@@ -1,0 +1,7 @@
+pipeline:
+  - print_text_from_argument: {text: 'This is the text passed to the method'}
+  - print_text_from_argument: {text: 1}
+  - print_predefined_text:
+  - n_times_squared: {value: 2, n: 2}
+  - print_text_from_argument: {text: 'Same method is called again, but later in the pipeline'}
+  - square_df:
