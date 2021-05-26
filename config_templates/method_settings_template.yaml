@@ -1,4 +1,0 @@
-pipeline:
-  - method1_name: # Method without any arguments
-  - method2_name: {argument1_name: 'string_value', argument2_name: 100} # Second argument is an example of an int argument
-  - method1_name: # You can call methods as often as you like and in any order you like

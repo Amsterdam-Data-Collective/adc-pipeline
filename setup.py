@@ -15,9 +15,7 @@ setuptools.setup(
     keywords=['Data Science', 'Data Engineering', 'Data', 'Pipeline'],
     packages=setuptools.find_packages(),
     install_requires=[
-        'numpy',
         'pandas',
-        'sqlalchemy',
         'pyyaml'
     ],
     classifiers=[
