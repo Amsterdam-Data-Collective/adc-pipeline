@@ -171,7 +171,7 @@ class PipelineBase(ABC):
                     method()
             else:
                 for idx, method in enumerate(self.method_list):
-                    if idx == load_cache_from_step:
+                    if idx == load_cache_from_step and self.df is not None:
                         self.df.to_pickle(step_path)
                     method()
         else:
