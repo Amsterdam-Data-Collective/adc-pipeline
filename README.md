@@ -103,7 +103,7 @@ p.run()  # Executes the pipeline, saves the results in cache/my_pipeline.pkl
 # Some other code
 p.run_or_load()  # Does not execute the pipeline but loads the content of cache/my_pipeline.pkl
 # Loads the result of the first function from a pkl file and executes the remaining 4 functions
-p.run_or_load(from_step=1)
+p.run_or_load(load_cache_from_step=1)
 ``` 
 
 ## Advanced usage

@@ -1,8 +1,9 @@
 import os
+import re
 import logging
 import pandas as pd
 from abc import ABC
-from typing import Callable, Dict, List, Iterator
+from typing import Callable, Dict, List, Iterator, Optional
 
 from pandas import DataFrame
 
@@ -74,13 +75,18 @@ class PipelineBase(ABC):
         """
         return self._method_list
 
-    def __init__(self, df: DataFrame, method_settings: List, filename: str = None) -> None:
+    def __init__(self, df: Optional[DataFrame], method_settings: List, filename: str = None) -> None:
         self.df = df
         self.method_settings = method_settings
         self.step = 0
-        if filename is not None and not os.path.exists('cache'):
-            os.makedirs('cache')
-        self.path = os.path.join('cache/', f"{filename}.pkl") if filename is not None else None
+        self.path = None
+        if filename is None:
+            return
+        if len(re.split(r'/\\', filename)) == 1:  # Filename is a path with directory
+            if filename is not None and not os.path.exists('cache'):
+                os.makedirs('cache')
+            self.path = os.path.join('cache/', f"{filename}")
+        self.path = os.path.join(f"{self.path}.pkl")
 
     @classmethod
     def from_yaml_file(cls, df: DataFrame, path: str):
@@ -139,10 +145,10 @@ class PipelineBase(ABC):
         logger.info(f'Running pipeline using the following settings: {self.method_settings}')
         for method in self.method_list:
             method()
-        if self.path is not None:
+        if self.path is not None and self.df is not None:
             self.df.to_pickle(self.path)
 
-    def run_or_load(self, from_step: int = None) -> None:
+    def run_or_load(self, load_cache_from_step: int = None) -> None:
         """
         Instead of running the pipeline, load the result from the pipeline from a cache file. Useful functionality
         if you have not modified the pipeline, but want to use the output. Beware that if you change the pipeline, you
@@ -150,22 +156,22 @@ class PipelineBase(ABC):
         Alternatively you can provide the from_step parameter to load the first N steps from cache and only execute
         the steps afterwards
         Args:
-            from_step (Optional): Determine from which step onwards you want to load the cache and continue with
+            load_cache_from_step (Optional): Determine from which step onwards you want to load the cache and continue with
                 executing the pipeline. Each method is accounted as a single step
 
         """
         if self.path is None:
             raise ValueError("Mode not possible without a valid filename attribute in class initiation")
-        if from_step is not None:
-            assert isinstance(from_step, int), "Please provide an int as from_step parameter"
-            step_path = f"{self.path.rstrip('.pkl')}_step{from_step}.pkl"
+        if load_cache_from_step is not None:
+            assert isinstance(load_cache_from_step, int), "Please provide an int as from_step parameter"
+            step_path = f"{self.path.rstrip('.pkl')}_step{load_cache_from_step}.pkl"
             if os.path.isfile(step_path):
                 self.df = pd.read_pickle(step_path)
-                for method in self.method_list[from_step:]:
+                for method in self.method_list[load_cache_from_step:]:
                     method()
             else:
                 for idx, method in enumerate(self.method_list):
-                    if idx == from_step:
+                    if idx == load_cache_from_step:
                         self.df.to_pickle(step_path)
                     method()
         else:
