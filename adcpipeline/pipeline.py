@@ -1,13 +1,12 @@
+import logging
 import os
 import re
-import logging
-import pandas as pd
 from abc import ABC
 from typing import Callable, Dict, List, Iterator, Optional
 
+import pandas as pd
+import yaml
 from pandas import DataFrame
-
-from adcpipeline.load_config import LoadConfig
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +88,7 @@ class PipelineBase(ABC):
         self.path = os.path.join(f"{self.path}.pkl")
 
     @classmethod
-    def from_yaml_file(cls, df: DataFrame, path: str):
+    def from_yaml_file(cls, df: DataFrame, path: str, filename: str = None):
         """
         This is a factory method to instantiate this class by loading the settings from a yaml file.
         Format of yaml file should be:
@@ -100,12 +99,14 @@ class PipelineBase(ABC):
         Args:
             df: This is your data in a DataFrame format.
             path: Path to yaml file.
+            filename: Path/filename for caching
 
         Returns:
             Instance of this class.
         """
-        settings = LoadConfig.load_yaml_as_dict(path)['pipeline']
-        return cls(df=df, method_settings=settings)
+        with open(file=path, mode='r') as f:
+            settings = yaml.safe_load(f.read())['pipeline']
+        return cls(df=df, method_settings=settings, filename=filename)
 
     def __call__(self) -> None:
         self.run()

@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import pandas as pd
 
 from adcpipeline import PipelineBase
@@ -41,3 +44,31 @@ class TestPipeline:
         p = Pipeline.from_yaml_file(df=data, path='tests/configs/pipeline_settings1.yaml')
         p.run()
         assert p.df.equals(pd.DataFrame(data=[[1, 4, 9], [16, 25, 36]])) is True
+
+    def test_caching(self):
+        method_settings = [
+            {'square_df': None},
+            {'print_predefined_text': None},
+            {'square_df': None},
+            {'print_predefined_text': None},
+        ]
+        p = Pipeline(df=data, method_settings=method_settings, filename='test_cache')
+        p.run_or_load()
+        p.run_or_load()
+        assert os.path.isfile('./cache/test_cache.pkl')
+        assert p.df.equals(pd.DataFrame(data=[[1, 16, 81], [256, 625, 1296]])) is True
+        shutil.rmtree('./cache')
+
+    def test_caching_with_steps(self):
+        method_settings = [
+            {'square_df': None},
+            {'print_predefined_text': None},
+            {'square_df': None},
+            {'print_predefined_text': None},
+        ]
+        p = Pipeline(df=data, method_settings=method_settings, filename='test_cache')
+        p.run_or_load(load_cache_from_step=1)
+        p.run_or_load(load_cache_from_step=1)
+        assert os.path.isfile('./cache/test_cache_step1.pkl')
+        assert p.df.equals(pd.DataFrame(data=[[1, 16, 81], [256, 625, 1296]])) is True
+        shutil.rmtree('./cache')
