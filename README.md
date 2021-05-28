@@ -87,7 +87,24 @@ p1.run()
 p2.run()
 p3.run()
 ```
-Where each `YOUR_METHOD_SETTINGS_<N>.yaml` defines the `method_settings` per `Pipeline`.
+Where each `YOUR_METHOD_SETTINGS_<N>.yaml` defines the `method_settings` per `Pipeline`. 
+Alternatively the pipeline ships with a `run_or_load()` method, which can save and load the result of a pipeline from 
+a .pkl file. This can be useful if you did not change the content of the pipeline, but need to rerun your script.
+```
+method_settings = [
+    {'print_text_from_argument': {'text': 'This is the text passed to the method'}},
+    {'print_text_from_argument': {'text': 1}},
+    {'print_predefined_text': None},
+    {'n_times_squared': {'value': 2, 'n': 2}},
+    {'print_text_from_argument': {'text': 'Same method is called again, but later in the pipeline'}}
+]
+p = Pipeline(df=data, method_settings=method_settings, filename='my_pipeline')
+p.run()  # Executes the pipeline, saves the results in cache/my_pipeline.pkl
+# Some other code
+p.run_or_load()  # Does not execute the pipeline but loads the content of cache/my_pipeline.pkl
+# Loads the result of the first function from a pkl file and executes the remaining 4 functions
+p.run_or_load(load_cache_from_step=1)
+``` 
 
 ## Advanced usage
 - The `method_settings` dictionary is converted to actual methods with their corresponding arguments. These are saved as lambda's in the property `method_list`, which are called in order by the `run` method. You can call the methods from this list directly if you want.

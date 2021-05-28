@@ -1,10 +1,12 @@
 import logging
+import os
+import re
 from abc import ABC
-from typing import Callable, Dict, List, Iterator
+from typing import Callable, Dict, List, Iterator, Optional
 
+import pandas as pd
+import yaml
 from pandas import DataFrame
-
-from adcpipeline.load_config import LoadConfig
 
 logger = logging.getLogger(__name__)
 
@@ -72,12 +74,21 @@ class PipelineBase(ABC):
         """
         return self._method_list
 
-    def __init__(self, df: DataFrame, method_settings: List) -> None:
+    def __init__(self, df: Optional[DataFrame], method_settings: List, filename: str = None) -> None:
         self.df = df
         self.method_settings = method_settings
+        self.step = 0
+        self.path = None
+        if filename is None:
+            return
+        if len(re.split(r'/\\', filename)) == 1:  # Filename is a path with directory
+            if filename is not None and not os.path.exists('cache'):
+                os.makedirs('cache')
+            self.path = os.path.join('cache/', f"{filename}")
+        self.path = os.path.join(f"{self.path}.pkl")
 
     @classmethod
-    def from_yaml_file(cls, df: DataFrame, path: str):
+    def from_yaml_file(cls, df: DataFrame, path: str, filename: str = None):
         """
         This is a factory method to instantiate this class by loading the settings from a yaml file.
         Format of yaml file should be:
@@ -88,12 +99,14 @@ class PipelineBase(ABC):
         Args:
             df: This is your data in a DataFrame format.
             path: Path to yaml file.
+            filename: Path/filename for caching
 
         Returns:
             Instance of this class.
         """
-        settings = LoadConfig.load_yaml_as_dict(path)['pipeline']
-        return cls(df=df, method_settings=settings)
+        with open(file=path, mode='r') as f:
+            settings = yaml.safe_load(f.read())['pipeline']
+        return cls(df=df, method_settings=settings, filename=filename)
 
     def __call__(self) -> None:
         self.run()
@@ -133,3 +146,37 @@ class PipelineBase(ABC):
         logger.info(f'Running pipeline using the following settings: {self.method_settings}')
         for method in self.method_list:
             method()
+        if self.path is not None and self.df is not None:
+            self.df.to_pickle(self.path)
+
+    def run_or_load(self, load_cache_from_step: int = None) -> None:
+        """
+        Instead of running the pipeline, load the result from the pipeline from a cache file. Useful functionality
+        if you have not modified the pipeline, but want to use the output. Beware that if you change the pipeline, you
+        should re-run the pipeline first or remove the cache. Otherwise this method will load incorrect results.
+        Alternatively you can provide the from_step parameter to load the first N steps from cache and only execute
+        the steps afterwards
+        Args:
+            load_cache_from_step (Optional): Determine from which step onwards you want to load the cache and continue with
+                executing the pipeline. Each method is accounted as a single step
+
+        """
+        if self.path is None:
+            raise ValueError("Mode not possible without a valid filename attribute in class initiation")
+        if load_cache_from_step is not None:
+            assert isinstance(load_cache_from_step, int), "Please provide an int as from_step parameter"
+            step_path = f"{self.path.rstrip('.pkl')}_step{load_cache_from_step}.pkl"
+            if os.path.isfile(step_path):
+                self.df = pd.read_pickle(step_path)
+                for method in self.method_list[load_cache_from_step:]:
+                    method()
+            else:
+                for idx, method in enumerate(self.method_list):
+                    if idx == load_cache_from_step and self.df is not None:
+                        self.df.to_pickle(step_path)
+                    method()
+        else:
+            if os.path.isfile(self.path):
+                self.df = pd.read_pickle(self.path)
+            else:
+                self.run()

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="adcpipeline",
-    version="0.1.1",
+    version="0.2.0",
     author="Amsterdam Data Collective",
     author_email="development@amsterdamdatacollective.com",
     description="A pipeline for a structured way of working",
@@ -15,9 +15,7 @@ setuptools.setup(
     keywords=['Data Science', 'Data Engineering', 'Data', 'Pipeline'],
     packages=setuptools.find_packages(),
     install_requires=[
-        'numpy',
         'pandas',
-        'sqlalchemy',
         'pyyaml'
     ],
     classifiers=[
