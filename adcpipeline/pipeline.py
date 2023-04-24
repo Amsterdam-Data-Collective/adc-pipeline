@@ -36,7 +36,10 @@ class PipelineBase(ABC):
                     raise TypeError('Argument names for methods should be strings')
 
         # Get lambda
-        method = getattr(self, method_name)
+        current_obj = self
+        for item in method_name.split('.'):
+            current_obj = getattr(current_obj, item)
+        method = current_obj
         if method_params is None:
             return lambda: method()
         else:
